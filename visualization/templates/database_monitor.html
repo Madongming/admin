@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %} Acttao监控平台{% endblock %}
+
+{% block content %}
+<!--<div class='main_window'>base_monitor_hosts</div>-->
+<div class='main_window'>
+    {% include 'time_select.html' %}
+    <link href="static/css/select_monitor.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="static/js/highcharts.js"></script>
+    <script type="text/javascript" src="static/js/post_select.js"></script>
+    <div id="container" style="min-width:700px;height:400px;display:none"></div>
+    <ul>
+        {% for monitor_name in monitor_names.object_list %}
+        <li class="monitor_name">{{ monitor_name }}</li>
+        {% endfor %}
+    </ul>
+    <p>
+        {% if monitor_names.has_previous %}
+        <a href="?page={{ monitor_names.previous_page_number  }}">前一页</a>
+        {% endif %}
+        {{ monitor_names.paginator.num_pages   }} 页中的第 {{ monitor_names.number  }} 页。
+        {% if monitor_names.has_next %}
+        <a href="?page={{ monitor_names.next_page_number  }}">后一页</a>
+        {% endif %}
+    </p>
+</div>
+{% endblock %}
+        

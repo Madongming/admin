@@ -1,0 +1,14 @@
+li.monitor_name{
+    line-height:30px;
+    text-align:left;
+    color:#000;
+    display:block;
+    background:#fff;
+    width:1050px;
+    float:right;
+    text-decoration:none;
+}
+li.monitor_name:hover{
+    color:#fff;
+    background:#333;
+}

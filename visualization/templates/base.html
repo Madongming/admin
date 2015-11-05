@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}Hello World{% endblock %}</title>
+	    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+	    <script type="text/javascript" src="static/js/menu.js"></script>
+        <link href="static/css/menu.css" rel="stylesheet" type="text/css"></link>
+        <link href="static/css/main.css" rel="stylesheet" type="text/css"></link>
+    </head>
+    <body>
+        {% include 'status.html' %}
+        {% include 'menu.html'  %}
+        {% block content %}
+        <div class='main_window'>main</div>
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,13 @@
+#Con {
+    text-align:center
+}
+
+.mapDiv {
+    width:140px;
+    height:61px;
+    padding: 5px;
+    color:#369;
+    background: url('/static/images/bg.gif') no-repeat;
+    position:absolute; display: none;
+    word-break:break-all;
+}

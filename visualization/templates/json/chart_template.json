@@ -1,0 +1,26 @@
+{
+    chart: {
+        type: $CHART_TYPE
+    },
+    title: {
+        text: $TITLE_TEXT
+    },
+    xAxis: {
+        categories: $XAXIS_CATEGORIES
+    },
+    tooltip: {
+        enabled: false,
+        formatter: function() {
+            return '<b>'+ this.series.name +'</b><br/>'+this.x +': '+ this.y;
+        }            
+    },
+    plotOptions: {
+        line: {
+            dataLabels: {
+                enabled: true
+            },
+            enableMouseTracking: false
+        }
+    },
+    series: $SERIES_LIST_NAME_DATA_DICT
+}

@@ -1,0 +1,69 @@
+<script language="javascript" type="text/javascript">
+    $(function() {
+        $("#webwidget_vertical_menu").webwidget_vertical_menu({
+            menu_width: '160',
+            menu_height: '25',
+            menu_margin: '2',
+            menu_text_size: '12',
+            menu_text_color: '#000',
+            menu_background_color: '#FFF',
+            menu_border_size: '2',
+            menu_border_color: '#000',
+            menu_border_style: 'solid',
+            menu_background_hover_color: '#999',
+            directory: '/static/images'
+        });
+    });
+</script>
+<div id="webwidget_vertical_menu" class="webwidget_vertical_menu">
+    <ul>
+        <li><a href="#">可视化监控</a>
+            <ul>
+                <li><a href="#">成交量监控</a>
+                    <ul>
+                        <li><a href="/product_count">商品总数</a></li>
+                        <li><a href="/order_count">订单数</a></li>
+                        <li><a href="/money_of_province">分省成交金额</a></li>
+                        <li><a href="/money_of_all">总成交金额</a></li>
+                        <li><a href="/site_data">DAU/MAU/PV</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">业务监控</a>
+                    <ul>
+                        <li><a href="#">商品总数</a></li>
+                        <li><a href="#">订单数</a></li>
+                        <li><a href="#">分省成交金额</a></li>
+                        <li><a href="#">总成交金额</a></li>
+                        <li><a href="#">DAU/MAU/PV</a></li>
+                    </ul>
+                </li>
+                <li><a href="/base_monitor">基础监控</a></li>
+                <li><a href="/database_monitor">数据库监控</a></li>
+            </ul>
+        </li>
+        <li><a href="#">自动化管理</a>
+            <ul>
+                <li><a href="#">主机管理</a>
+                    <ul>
+                        <li><a href="/add_host">添加</a></li>
+                        <li><a href="/delete_host">删除</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">服务管理</a>
+                    <ul>
+                        <li><a href="/add_service">添加</a></li>
+                        <li><a href="/delete_service">删除</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#">资产管理</a></li>
+        <li><a href="#">定制化</a>
+            <ul>
+                <li><a href="/manage_pic">图表管理</a></li>
+                <li><a href="/conf_dashboard">面板管理</a></li>
+            </ul>
+        </li>
+    </ul>
+    <div style="clear: both"></div>
+</div>

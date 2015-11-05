@@ -1,0 +1,8 @@
+.main_window {
+    width:1050px;
+    border:1px solid black;
+    position:absolute;
+    left:200px;
+    top:64px;
+    padding:10px;
+}
