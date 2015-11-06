@@ -12,22 +12,25 @@ def index(request):
     return render(request, 'index.html')
 
 def product_count(request):
-    return render(request, 'product_count.html')
+    return render(request, 'temp_for_gen.html', {'monitor_names': Search_data.objects.get(id=29).monitor_name})
 
 def order_count(request):
-    return render(request, 'order_count.html')
+    return render(request, 'temp_for_gen.html', {'monitor_names': Search_data.objects.get(id=30).monitor_name})
 
 def money_of_province(request):
     return render(request, 'money_of_province.html')
 
 def money_of_all(request):
-    return render(request, 'money_of_all.html')
+    return render(request, 'temp_for_gen.html', {'monitor_names': Search_data.objects.get(id=31).monitor_name})
 
 def site_data(request):
-    return render(request, 'site_data.html')
+    return render(request, 'temp_for_gen.html', {'monitor_names': Search_data.objects.get(id=32).monitor_name})
+
+def busniss_data(request):
+    return render(request, 'temp_for_gen.html', {'monitor_names': Search_data.objects.get(id=33).monitor_name})
 
 def base_monitor(request):
-    limit = 5
+    limit = 15
     monitor_name = []
     for obj in Search_data.objects.all():
         monitor_name.append(obj.monitor_name)
@@ -46,8 +49,20 @@ def api_post_profile_data(request):
     for key in results:
         results[key] = results[key][0]
     es=getElastseData()
-    print es.getPicJson(**results)
     return HttpResponse(json.dumps(es.getPicJson(**results), ensure_ascii=False ))
+
+def api_post_profile_data_test(request):
+    results = dict(request.POST.iterlists())
+    for key in results:
+        results[key] = results[key][0]
+    es=getElastseData()
+    return HttpResponse(json.dumps(es.getPicJson_test(**results), ensure_ascii=False ))
+
+def api_post_get_city_data(request):
+    results = dict(request.POST.iterlists())
+    city_id = results['city_id'][0]
+    city_data = int(random.uniform(10000,200000))
+    return HttpResponse(json.dumps({'data':city_data}, ensure_ascii=False ))
 
 def database_monitor(request):
     limit = 5
@@ -71,6 +86,7 @@ def dashboard1(request):
     return render(request, 'dashboard1.html', {'monitor_names': monitor_names})
 
 def dashboard2(request):
-
-    return render(request, 'dashboard2.html')
-
+    monitor_names = {}
+    for obj in Search_data.objects.filter(num_dashboard__startswith='2'):
+        monitor_names[obj.num_dashboard[-1]] = obj.monitor_name
+    return render(request, 'dashboard2.html', {'monitor_names': monitor_names})

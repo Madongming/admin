@@ -3,6 +3,37 @@
 {% block title %} Acttao监控平台{% endblock %}
 
 {% block content %}
-<div class='main_window'>conf_dashboard</div>                                                          
+<div class='main_window'>
+    <script type="text/javascript" src="static/js/conf_dashboard.js"></script>
+    <script tpye="text/javascript">
+        window.c=0;
+        function doCheck(obj){
+            obj.checked?window.c++:window.c--;
+            if ($("input[type='radio']:checked").val() ==='dashboard1'){
+                limit = 4;
+            }
+            if ($("input[type='radio']:checked").val() ==='dashboard2') {
+                limit = 3;
+            }
+            if(window.c>limit){
+                obj.checked=false;
+                window.c--;
+                alert("超过最多图表数目!");
+            }
+        };
+    </script>
+
+    <form>
+        <label for="dashboard1">dashboard1</label>
+        <input type="radio" value="dashboard1" name="dashboard" id="dashboard1" checked="checked" />
+        &nbsp
+        <label for="dashboard2">dashboard2</label>
+        <input type="radio" value="dashboard2" name="dashboard" id="dashboard2" /><br />
+        {% for monitor_name in monitor_names %}
+        <label><input type="checkbox" name="monitor_name" onClick="doCheck(this)" value="{{ monitor_name  }}" /> {{ monitor_name }} </label><br />
+        {% endfor %}
+        <input type='button' id='conf_dashboard_yes' value="确定" />
+    </form>
+</div>                                                          
 {% endblock %}
         

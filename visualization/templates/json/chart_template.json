@@ -9,7 +9,7 @@
         categories: $XAXIS_CATEGORIES
     },
     tooltip: {
-        enabled: false,
+        enabled: true,
         formatter: function() {
             return '<b>'+ this.series.name +'</b><br/>'+this.x +': '+ this.y;
         }            

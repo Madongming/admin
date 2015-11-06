@@ -1,125 +1,89 @@
 <!DOCTYPE html>
 <html>
-    <head>
-    <title>ACTTAO 监控</title>
-    <style>
-        .wrapper {
-    width: 100%;    /* 也可以固定宽度 */
-    height: 900px;
- 
+<head>
+<title>ACTTAO 监控</title>
+<style>
+.wrapper1 {
+    width: 100%;
+    height: 450px;
+    margin: 4px;
 }
-.wrapper > div {
-    display: inline-block;    /* 如需支持IE8以下版本，用浮动来做 */
-    width: calc(100% / 2.10);    /* 此处运用了一个css3的表达式，将div三等分，IE8及以上可以支持，当然也可以根据需要设置固定值 */
-    width: -webkit-calc(100% / 2.10); /*3.09 排除margin的宽度*/
+.wrapper2 {
+    width: 100%;
+    height: 450px;
+    margin: 4px;
+}
+.wrapper1 > div {
+    display: inline-block;
+    width: calc(100% / 2.10);
+    width: -webkit-calc(100% / 2.10);
     width: -moz-calc(100% / 2.10);
-    height: calc(100% / 2.10);
-    height: -webkit-calc(100% / 2.10);
-    height: -moz-calc(100% / 2.10);
+    height: calc(100% / 1.025);
+    height: -webkit-calc(100% / 1.05);
+    height: -moz-calc(100% / 1.05);
     border: 2px solid black;
     padding: 10px;
-    margin: 1px;
 }
-    </style>
-    <script type="text/javascript" src="static/js/jquery.min.js"></script>
-    <script type="text/javascript" src="static/js/highcharts.js"></script>
-    <script tpye="text/javascript">
-	    (function($){
-            $.extend({
-                RefreshToUnix: function(string){
-                    var f = string.slice(-1);
-                    var d = string.slice(0, -1);
-                    if(f === 'm'){
-                        return parseInt(d) * 60 * 1000;
-                    }
-                    if(f === 's'){
-                        return parseInt(d) * 1000;
-                    }
-                }
-            });
-        })(jQuery);
+.wrapper2 > div {
+    width: calc(100% / 1.025);
+    width: -webkit-calc(100% / 1.025);
+    width: -moz-calc(100% / 1.025);
+    height: calc(100% / 1.05);
+    height: -webkit-calc(100% / 1.05);
+    height: -moz-calc(100% / 1.05);
+    border: 2px solid black;
+    padding: 10px;
+}
+</style>
+<script type="text/javascript" src="static/js/jquery.min.js"></script>
+<script type="text/javascript" src="static/js/highcharts.js"></script>
+<script tpye="text/javascript">
+(function($){
+    $.extend({
+        RefreshToUnix: function(string){
+            var f = string.slice(-1);
+            var d = string.slice(0, -1);
+            if(f === 'm'){
+                return parseInt(d) * 60 * 1000;
+            }
+            if(f === 's'){
+                return parseInt(d) * 1000;
+            }
+        } 
+    });
+})(jQuery);
 
-        $(document).ready(function(){
-            $("#lefttop").setTimeout(function(){
-                var lefttop_data = {
-                    "time_start": Date.parse(new Date()) - $.RefreshToUnix($(".wrapper#lefttop#time_before option:selected").val()),
-                    "time_end": Date.parse(new Date()),
-                    "monitor_name": {{ 'monitor_names': '1' }},
-                    "interval": $(".wrapper#lefttop#time_interval option:selected").val()
-                };
-                $.ajax({
-                    "type": "POST",
-                    "dataType": "json",
-                    "url": "/api/post_profile_data",
-                    "data": lefttop_data,
-                    "success": function(result) {
-                        $('#container').show();
-                        eval("$('#container1').highcharts("+JSON.parse(result)+")");
-                    }    
-                });
-            }, $.RefreshToUnix($(".wrapper#lefttop#time_refresh option:selected").val()));
+function dorefresh(time_start, time_end, monitor_names, interval, container){
+    var data = {
+        "time_start": time_start,
+        "time_end": time_end,
+        "monitor_name": monitor_names,
+        "interval": interval
+    };
+    $.ajax({
+        "type": "POST",
+        "dataType": "json",
+        "url": "/api/post_profile_data",
+        "data": data,
+        "success": function(result) {
+            $('#container').show();
+            eval(container+".highcharts("+JSON.parse(result)+")");
+        }    
+    });
+};
 
-            $("#righttop").setTimeout(function(){
-                var righttop_data = {
-                    "time_start": Date.parse(new Date()) - $.RefreshToUnix($(".wrapper#righttop#time_before option:selected").val()),
-                    "time_end": Date.parse(new Date()),
-                    "monitor_name": {{ 'monitor_names': '2' }},
-                    "interval": $(".wrapper#righttop#time_interval option:selected").val()
-                };
-                $.ajax({
-                    "type": "POST",
-                    "dataType": "json",
-                    "url": "/api/post_profile_data",
-                    "data": righttop_data,
-                    "success": function(result) {
-                        $('#container').show();
-                        eval("$('#container2').highcharts("+JSON.parse(result)+")");
-                    }    
-                });
-            }, $.RefreshToUnix($(".wrapper#righttop#time_refresh option:selected").val()));
-
-            $("#leftbottom").setTimeout(function(){
-                var leftbottom_data = {
-                    "time_start": Date.parse(new Date()) - $.RefreshToUnix($(".wrapper#leftbottom#time_before option:selected").val()),
-                    "time_end": Date.parse(new Date()),
-                    "monitor_name": {{ 'monitor_names': '3' }},
-                    "interval": $(".wrapper#leftbottom#time_interval option:selected").val()
-                };
-                $.ajax({
-                    "type": "POST",
-                    "dataType": "json",
-                    "url": "/api/post_profile_data",
-                    "data": leftbottom_data,
-                    "success": function(result) {
-                        $('#container').show();
-                        eval("$('#container3').highcharts("+JSON.parse(result)+")");
-                    }    
-                });
-            }, $.RefreshToUnix($(".wrapper#leftbottom#time_refresh option:selected").val()));
-
-            $("#rightbottom").setTimeout(function(){
-                var rightbottom_data = {
-                    "time_start": Date.parse(new Date()) - $.RefreshToUnix($(".wrapper#rightbottom#time_before option:selected").val()),
-                    "time_end": Date.parse(new Date()),
-                    "monitor_name": {{ 'monitor_names': '4' }},
-                    "interval": $(".wrapper#rightbottom#time_interval option:selected").val()
-                };
-                $.ajax({
-                    "type": "POST",
-                    "dataType": "json",
-                    "url": "/api/post_profile_data",
-                    "data": rightbottom_data,
-                    "success": function(result) {
-                        $('#container').show();
-                        eval("$('#container4').highcharts("+JSON.parse(result)+")");
-                    }    
-                });
-            }, $.RefreshToUnix($(".wrapper#rightbottom#time_refresh option:selected").val()));
-        });
-    </script>
+$(document).ready(function(){
+    dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(".wrapper1>#lefttop>#time_before option:selected").val()), Date.parse(new Date()), "{{ monitor_names.1 }}", $(".wrapper1>#lefttop>#time_interval option:selected").val(), "$('#container1')");
+    setInterval("dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(\".wrapper1>#lefttop>#time_before option:selected\").val()), Date.parse(new Date()), \"{{ monitor_names.1 }}\", $(\".wrapper1>#lefttop>#time_interval option:selected\").val(), \"$('#container1')\")", $.RefreshToUnix($(".wrapper1>#lefttop>#time_refresh option:selected").val()));
+    dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(".wrapper1>#righttop>#time_before option:selected").val()), Date.parse(new Date()), "{{ monitor_names.2 }}", $(".wrapper1>#righttop>#time_interval option:selected").val(), "$('#container2')");
+    setInterval("dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(\".wrapper1>#righttop>#time_before option:selected\").val()), Date.parse(new Date()), \"{{ monitor_names.2 }}\", $(\".wrapper1>#righttop>#time_interval option:selected\").val(), \"$('#container2')\")", $.RefreshToUnix($(".wrapper1>#righttop>#time_refresh option:selected").val()));
+    dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(".wrapper2>#bottom>#time_before option:selected").val()), Date.parse(new Date()), "{{ monitor_names.3 }}", $(".wrapper2>#bottom>#time_interval option:selected").val(), "$('#container3')");
+    setInterval("dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(\".wrapper2>#bottom>#time_before option:selected\").val()), Date.parse(new Date()), \"{{ monitor_names.3 }}\", $(\".wrapper2>#bottom>#time_interval option:selected\").val(), \"$('#container3')\")", $.RefreshToUnix($(".wrapper2>#bottom>#time_refresh option:selected").val()));
+});
+</script>
 </head>
 <body>
-    <div class="wrapper">
+    <div class="wrapper1">
         <div id='lefttop'>
             {% include 'time_select_small.html' %}
             <div id="container1"></div>
@@ -129,15 +93,11 @@
             {% include 'time_select_small.html' %}
             <div id="container2"></div>
         </div>
-
-        <div id='leftbottom'>
+    </div>
+    <div class="wrapper2">
+        <div id='bottom'>
             {% include 'time_select_small.html' %}
             <div id="container3"></div>
-        </div>
-        
-        <div id='rightbottom'>
-            {% include 'time_select_small.html' %}
-            <div id="container4"></div>
         </div>
     </div>
 </body>

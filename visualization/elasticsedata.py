@@ -11,6 +11,10 @@ from string import Template
 from django.conf import settings
 import datetime
 
+####for test data###
+import random
+####for test data###
+
 class getElastseData(ElastseData):
     def getData(self, **kw):
         index = kw.get('index')
@@ -117,6 +121,100 @@ class getElastseData(ElastseData):
                 SERIES_LIST_NAME_DATA_DICT.append({'name':key.encode(), 'data':results[key]})
             tempdict = {u'CHART_TYPE':u"'"+CHART_TYPE+u"'", u'TITLE_TEXT':u"'"+TITLE_TEXT+u"'", u'XAXIS_CATEGORIES':XAXIS_CATEGORIES, u'TOOLTIP_ENABLED':False, u'PLOTOPTIONS_LINE_DATALABELS_ENABLED':True, u'PLOTOPTIONS_LINE_ENABLEMOUSETRACKING':False, u'SERIES_LIST_NAME_DATA_DICT':SERIES_LIST_NAME_DATA_DICT}
         elif data['pic_type'] == 'column':
+            XAXIS_CATEGORIES = []
+            SERIES_DATA = []
+            SERIES_NAME = data['field']
+            for key in results:
+                XAXIS_CATEGORIES.append(key)
+                SERIES_DATA.append(results[key])
+            tempdict = {u'CHART_TYPE':u"'"+CHART_TYPE+u"'", u'TITLE_TEXT':u"'"+TITLE_TEXT+u"'", u'XAXIS_CATEGORIES':XAXIS_CATEGORIES, 'SERIES_NAME':u"'"+SERIES_NAME+"'", 'SERIES_DATA':SERIES_DATA}
+        return json.dumps(Template(tempstr).substitute(tempdict))
+
+    def getPicJson_test(self, **kw):
+        monitor_name = kw.get('monitor_name', None)
+        if monitor_name is not None:
+            data = model_to_dict(Search_data.objects.get(monitor_name=monitor_name))
+        data['time_start'] = int(kw.get('time_start'))
+        data['time_end'] = int(kw.get('time_end'))
+        data['interval'] = kw.get('interval')
+        time_start_date = int(datetime.datetime.fromtimestamp(data['time_start']/1000).strftime('%d'))
+        time_end_date = int(datetime.datetime.fromtimestamp(data['time_end']/1000).strftime('%d'))
+        if time_start_date != time_end_date:
+            index_list = []
+            for i in range(data['time_start']/1000, data['time_end']/1000, 86400):
+                index_list.append('%s-%s' % (data['index'],datetime.datetime.fromtimestamp(i).strftime('%Y.%m.%d')))
+            data['index'] = ','.join(index_list)
+        else:
+            data['index'] = '%s-%s' % (data['index'], datetime.datetime.fromtimestamp(data['time_end']/1000).strftime('%Y.%m.%d'))
+
+
+        a = data['time_start'] / 1000
+        b = data['time_end'] / 1000
+        interval = data['interval']
+        if interval[-1] == 's':
+            per = int(interval[0:-1])
+        if interval[-1] == 'm':
+            per=int(interval[0:-1]) * 60
+        if interval[-1] == 'h':
+            per=int(interval[0:-1]) * 60 * 60
+        if interval[-1] == 'w':
+            per=int(interval[0:-1]) * 60 * 60 * 24 * 7
+        if interval[-1] == 'M':
+            per=int(interval[0:-1]) * 60 * 60 * 24 * 30
+        if interval[-1] == 'y':
+            per=int(interval[0:-1]) * 60 * 60 * 24 * 365
+        c = per
+
+        columns = data['fields'].split(';')
+        while '' in columns:
+            columns.remove('')
+        results = {}
+        for key in columns:
+            results[key] = []
+        for key in results:
+            d = (b-a+c)/c
+            while d:
+                results[key].append(int(random.uniform(10000,200000)))
+                d -= 1
+                
+
+        if data['mothod_type'] == 'gen':
+            filepath = '%s/visualization/templates/json/chart_template.json' % settings.BASE_DIR
+        elif data['mothod_type'] == 'some_top':
+            filepath = '%s/visualization/templates/json/chart_column_template.json' % settings.BASE_DIR
+        with open(filepath, 'r') as f:
+            tempstr = f.read()
+        tempstr = tempstr.replace('\n','').replace(' ','').decode()
+        CHART_TYPE = data['pic_type']
+        TITLE_TEXT = data['monitor_name']
+        interval = data['interval']
+        if interval[-1] == 's':
+            per = int(interval[0:-1])
+            fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%H:%M:%S')
+        if interval[-1] == 'm':
+            per=int(interval[0:-1]) * 60
+            fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%H:%M')
+        if interval[-1] == 'h':
+            per=int(interval[0:-1]) * 60 * 60
+            fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%H')
+        if interval[-1] == 'w':
+            per=int(interval[0:-1]) * 60 * 60 * 24 * 7
+            fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%w')
+        if interval[-1] == 'M':
+            per=int(interval[0:-1]) * 60 * 60 * 24 * 30
+            fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%m')
+        if interval[-1] == 'y':
+            per=int(interval[0:-1]) * 60 * 60 * 24 * 365
+            fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%Y')
+        start = data['time_start'] / 1000
+        end = data['time_end'] / 1000
+        if data['mothod_type'] == 'gen':
+            XAXIS_CATEGORIES = str(map(fn,range(start, end+per, per)))
+            SERIES_LIST_NAME_DATA_DICT = []
+            for key in results:
+                SERIES_LIST_NAME_DATA_DICT.append({'name':key.encode(), 'data':results[key]})
+            tempdict = {u'CHART_TYPE':u"'"+CHART_TYPE+u"'", u'TITLE_TEXT':u"'"+TITLE_TEXT+u"'", u'XAXIS_CATEGORIES':XAXIS_CATEGORIES, u'TOOLTIP_ENABLED':False, u'PLOTOPTIONS_LINE_DATALABELS_ENABLED':True, u'PLOTOPTIONS_LINE_ENABLEMOUSETRACKING':False, u'SERIES_LIST_NAME_DATA_DICT':SERIES_LIST_NAME_DATA_DICT}
+        elif data['mothod_type'] == 'some_top':
             XAXIS_CATEGORIES = []
             SERIES_DATA = []
             SERIES_NAME = data['field']

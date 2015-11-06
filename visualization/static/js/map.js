@@ -6,14 +6,24 @@ $(function(){
         var city_id=$(this).attr("id");
 		$(this).mouseover(function(e){
             var index_num=$(this).index();
-			var dom="<div class='mapDiv'><p>提示消息<span class='name'></span><span class='num'></span></p></div>";
-			$("body").append(dom);
-			$(".name").text(name);
-//	$(".num").text(index_num)
-			$(".mapDiv").css({
-                top: (e.pageY + $y)+"px",
-				left: (e.pageX + $x)+"px"
-			}).show("fast");
+            var data = {
+                'city_id':city_id
+            };
+            $.ajax({
+                "type": "POST",
+                "dataType": "json",
+                "url": "/api/post_get_city_data",
+                "data": data,
+                "success": function(result) {
+			        var dom="<div class='mapDiv'><p>"+"交易量为"+result.data+"&nbsp&nbsp<span class='name'></span><span class='num'></span></p></div>";
+			        $("body").append(dom);
+			        $(".name").text(name);
+			        $(".mapDiv").css({
+                        top: (e.pageY + $y)+"px",
+				        left: (e.pageX + $x)+"px"
+			        }).show("fast");
+                }
+            });
         }).mouseout(function(){
             $(".mapDiv").remove();
         }).mousemove(function(e){
