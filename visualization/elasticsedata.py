@@ -87,6 +87,8 @@ class getElastseData(ElastseData):
             filepath = '%s/visualization/templates/json/chart_template.json' % settings.BASE_DIR
         elif data['pic_type'] == 'column':
             filepath = '%s/visualization/templates/json/chart_column_template.json' % settings.BASE_DIR
+        elif data['pic_type'] == 'spline':
+            filepath = '%s/visualization/templates/json/chart_spline_template.json' % settings.BASE_DIR
         with open(filepath, 'r') as f:
             tempstr = f.read()
         tempstr = tempstr.replace('\n','').replace(' ','').decode()
@@ -128,6 +130,9 @@ class getElastseData(ElastseData):
                 XAXIS_CATEGORIES.append(key)
                 SERIES_DATA.append(results[key])
             tempdict = {u'CHART_TYPE':u"'"+CHART_TYPE+u"'", u'TITLE_TEXT':u"'"+TITLE_TEXT+u"'", u'XAXIS_CATEGORIES':XAXIS_CATEGORIES, 'SERIES_NAME':u"'"+SERIES_NAME+"'", 'SERIES_DATA':SERIES_DATA}
+        elif data['pic_type'] == 'spline':
+            SERIES_NAME = data['fields'][0]
+            tempdict = {u'CHART_TYPE':u"'"+CHART_TYPE+u"'", u'TITLE_TEXT':u"'"+TITLE_TEXT+u"'", 'SERIES_NAME':u"'"+SERIES_NAME+"'"}
         return json.dumps(Template(tempstr).substitute(tempdict))
 
     def getPicJson_test(self, **kw):

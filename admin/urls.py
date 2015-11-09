@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^api/test/post_profile_data$', 'visualization.views.api_post_profile_data_test', name='api_post_profile_data_test'),
     url(r'^api/post_profile_data$', 'visualization.views.api_post_profile_data', name='api_post_profile_data'),
     url(r'^api/post_get_city_data$', 'visualization.views.api_post_get_city_data', name='api_post_get_city_data'),
+    url(r'^api/post_get_source_data$', 'visualization.views.api_post_get_source_data', name='api_post_get_source_data'),
     url(r'^api/post_get_profile_data$', 'customization.views.post_get_profile_data', name='post_get_profile_data'),
     url(r'^api/post_update_pic_profile$', 'customization.views.post_update_pic_profile', name='post_update_pic_profile'),
     url(r'^api/post_create_pic_profile$', 'customization.views.post_create_pic_profile', name='post_create_pic_profile'),

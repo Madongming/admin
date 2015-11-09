@@ -64,6 +64,13 @@ def api_post_get_city_data(request):
     city_data = int(random.uniform(10000,200000))
     return HttpResponse(json.dumps({'data':city_data}, ensure_ascii=False ))
 
+def api_post_get_source_data(request):
+    results = dict(request.POST.iterlists())
+    for key in results:
+        results[key] = results[key][0]
+    es=getElastseData()
+    return HttpResponse(json.dumps(es.getResult(**results), ensure_ascii=False ))
+
 def database_monitor(request):
     limit = 5
     monitor_name = []
