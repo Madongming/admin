@@ -72,7 +72,7 @@ def api_post_get_source_data(request):
     return HttpResponse(json.dumps(es.getResult(**results), ensure_ascii=False ))
 
 def database_monitor(request):
-    limit = 5
+    limit = 15
     monitor_name = []
     for obj in Search_data.objects.filter(monitor_name__icontains='mysql'):
         monitor_name.append(obj.monitor_name)
