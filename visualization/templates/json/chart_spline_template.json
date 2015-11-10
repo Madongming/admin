@@ -1,0 +1,67 @@
+{
+    chart: {
+        type: $CHART_TYPE,
+        animation: Highcharts.svg,               
+        marginRight: 10,                                                    
+        events: {                                                           
+            load: function() {                                              
+                var series = this.series[0];                                
+                setInterval(function() {                                    
+                    var x = (new Date()).getTime();         
+                    var y = dorefresh(time_start, time_end, monitor_names, interval, container)
+                    series.addPoint([x, y], true, true);                    
+                }, 5000);                                                   
+            }
+        }
+    },
+            
+    title: {                                                                
+        text: $TITLE_TEXT                                            
+    },                                                                      
+    
+    xAxis: {                                                                
+        type: 'datetime',                                                   
+        tickPixelInterval: 150                                              
+    },                                                                      
+          
+    yAxis: {                                                                
+        title: {                                                            
+            text: 'Value'                                                   
+        },                                                                  
+        plotLines: [{                                                       
+            value: 0,                                                       
+            width: 1,                                                       
+            color: '#808080'                                                
+        }]                                                                  
+    },                                                                      
+    
+    tooltip: {                                                              
+        formatter: function() {
+            return '<b>'+ this.series.name +'</b><br/>'+Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+Highcharts.numberFormat(this.y, 2);                         
+        }
+    },                                                                      
+          
+    legend: {                                                               
+        enabled: false                                                      
+    },                                                                      
+     
+    exporting: {                                                            
+        enabled: false                                                      
+    },                                                                      
+     
+    series: [{                                                              
+        name: $SERIES_NAME,                                                
+        data: (function() {
+            var data = [],                                                  
+            time = (new Date()).getTime(),
+            i;                                                          
+            for (i = -19; i <= 0; i++) {                                    
+                data.push({                                                 
+                    x: time + i * 1000,                                     
+                    y: dorefresh(time_start, time_end, monitor_names, interval, container)
+                });                                                         
+            }
+        return data;                                                    
+        })()                                                                
+    }]                                                                      
+});                                                                         
