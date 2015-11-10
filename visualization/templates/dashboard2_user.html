@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %} Acttao监控平台{% endblock %}
+
+{% block content %}
+<!--<div class='main_window'>base_monitor_hosts</div>-->
+<div class='main_window'>
+<style>
+.wrapper1 {
+    width: 100%;
+    height: 450px;
+    margin: 4px;
+}
+.wrapper2 {
+    width: 100%;
+    height: 450px;
+    margin: 4px;
+}
+.wrapper1 > div {
+    display: inline-block;
+    width: calc(100% / 2.10);
+    width: -webkit-calc(100% / 2.10);
+    width: -moz-calc(100% / 2.10);
+    height: calc(100% / 1.025);
+    height: -webkit-calc(100% / 1.05);
+    height: -moz-calc(100% / 1.05);
+    border: 2px solid black;
+    padding: 10px;
+}
+.wrapper2 > div {
+    width: calc(100% / 1.025);
+    width: -webkit-calc(100% / 1.025);
+    width: -moz-calc(100% / 1.025);
+    height: calc(100% / 1.05);
+    height: -webkit-calc(100% / 1.05);
+    height: -moz-calc(100% / 1.05);
+    border: 2px solid black;
+    padding: 10px;
+}
+</style>
+<script type="text/javascript" src="static/js/jquery.min.js"></script>
+<script type="text/javascript" src="static/js/highcharts.js"></script>
+<script tpye="text/javascript">
+(function($){
+    $.extend({
+        RefreshToUnix: function(string){
+            var f = string.slice(-1);
+            var d = string.slice(0, -1);
+            if(f === 'm'){
+                return parseInt(d) * 60 * 1000;
+            }
+            if(f === 's'){
+                return parseInt(d) * 1000;
+            }
+        } 
+    });
+})(jQuery);
+
+function dorefresh(time_start, time_end, monitor_names, interval, container){
+    var data = {
+        "time_start": time_start,
+        "time_end": time_end,
+        "monitor_name": monitor_names,
+        "interval": interval
+    };
+    $.ajax({
+        "type": "POST",
+        "dataType": "json",
+        "url": "/api/post_profile_data",
+        "data": data,
+        "success": function(result) {
+            $('#container').show();
+            eval(container+".highcharts("+JSON.parse(result)+")");
+        }    
+    });
+};
+
+$(document).ready(function(){
+    dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(".wrapper1>#lefttop>#time_before option:selected").val()), Date.parse(new Date()), "{{ monitor_names.1 }}", $(".wrapper1>#lefttop>#time_interval option:selected").val(), "$('#container1')");
+    setInterval("dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(\".wrapper1>#lefttop>#time_before option:selected\").val()), Date.parse(new Date()), \"{{ monitor_names.1 }}\", $(\".wrapper1>#lefttop>#time_interval option:selected\").val(), \"$('#container1')\")", $.RefreshToUnix($(".wrapper1>#lefttop>#time_refresh option:selected").val()));
+    dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(".wrapper1>#righttop>#time_before option:selected").val()), Date.parse(new Date()), "{{ monitor_names.2 }}", $(".wrapper1>#righttop>#time_interval option:selected").val(), "$('#container2')");
+    setInterval("dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(\".wrapper1>#righttop>#time_before option:selected\").val()), Date.parse(new Date()), \"{{ monitor_names.2 }}\", $(\".wrapper1>#righttop>#time_interval option:selected\").val(), \"$('#container2')\")", $.RefreshToUnix($(".wrapper1>#righttop>#time_refresh option:selected").val()));
+    dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(".wrapper2>#bottom>#time_before option:selected").val()), Date.parse(new Date()), "{{ monitor_names.3 }}", $(".wrapper2>#bottom>#time_interval option:selected").val(), "$('#container3')");
+    setInterval("dorefresh(Date.parse(new Date()) - $.RefreshToUnix($(\".wrapper2>#bottom>#time_before option:selected\").val()), Date.parse(new Date()), \"{{ monitor_names.3 }}\", $(\".wrapper2>#bottom>#time_interval option:selected\").val(), \"$('#container3')\")", $.RefreshToUnix($(".wrapper2>#bottom>#time_refresh option:selected").val()));
+});
+</script>
+</head>
+<body>
+    <div class="wrapper1">
+        <div id='lefttop'>
+            {% include 'time_select_small.html' %}
+            <div id="container1"></div>
+        </div>
+ 
+        <div id='righttop'>
+            {% include 'time_select_small.html' %}
+            <div id="container2"></div>
+        </div>
+    </div>
+    <div class="wrapper2">
+        <div id='bottom'>
+            {% include 'time_select_small.html' %}
+            <div id="container3"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

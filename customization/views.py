@@ -6,6 +6,7 @@ from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from visualization.models import *
 from django.forms.models import model_to_dict
+#from myuser.models import *
 import json
 # Create your views here.
 
@@ -115,4 +116,27 @@ def post_conf_dashboard(request):
             for key in backup:
                 Search_data.objects.filter(id=key).update(num_dashboard=backup[key])
     return HttpResponse(json.dumps(status))
+    
+
+#def post_conf_user_dashboard(request):
+#    data = dict(request.POST.iterlists())
+#    results = {}
+#    if data.has_key('dashboard1[]'):
+#        for dashboard_info in data['dashboard1[]']:
+#            dashboard_location = '1%s' % str(data['dashboard1[]'].index(dashboard_info)+1)
+#            results[dashboard_location] = Search_data.objects.get(monitor_name=dashboard_info).id
+#    if data.has_key('dashboard2[]'):
+#        for dashboard_info in data['dashboard2[]']:
+#            dashboard_location = '2%s' % str(data['dashboard1[]'].index(dashboard_info)+1)
+#            results[dashboard_location] = Search_data.objects.get(monitor_name=dashboard_info).id
+#    tmplist = []
+#    for i in results:
+#        tmplist.append(i+':'+str(results[i]))
+#    result = ';'.join(tmplist)
+#    status = True
+#    try:
+#        User.objects.filter(id=request.user.userid).update(dashboard=result)
+#    except:
+#        status = False
+#    return HttpResponse(json.dumps(status))
     

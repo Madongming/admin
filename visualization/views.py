@@ -5,10 +5,21 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
+#from myuser.models import *
 
 # Create your views here.
 
 def index(request):
+#    monitor_names = {}
+#    dashboard_infos = User.objects.get(id=request.user.userid).dashboard
+#    for dashboard_info in dashboard_info.split(';'):
+#        monitor_names[dashboard_info[1]] = Search_data.objects.get(id=int(str(dashboard_info[3:]))).monitor_name
+#    if dashboard_infos[0] == '1':
+#        return render(request, 'dashboard1_user.html', {'monitor_names': monitor_names})
+#    if dashboard_infos[0] == '2':
+#        return render(request, 'dashboard2_user.html', {'monitor_names': monitor_names})
+#    else:
+#        return render(request, 'index.html')
     return render(request, 'index.html')
 
 def product_count(request):
@@ -94,6 +105,7 @@ def dashboard1(request):
 
 def dashboard2(request):
     monitor_names = {}
-    for obj in Search_data.objects.filter(num_dashboard__startswith='2'):
-        monitor_names[obj.num_dashboard[-1]] = obj.monitor_name
+    dashboard_infos = User.objects.get(id=request.user.userid).dashboard
+    for dashboard_info in dashboard_info.split(';'):
+        monitor_names[dashboard_info[1]] = Search_data.objects.get(id=int(str(dashboard_info[3:]))).monitor_name
     return render(request, 'dashboard2.html', {'monitor_names': monitor_names})
