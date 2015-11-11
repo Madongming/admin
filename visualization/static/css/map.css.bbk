@@ -1,6 +1,13 @@
 #Con {
-    text-align:center;
+    width: calc(100% / 1.025);
+    width: -webkit-calc(100% / 1.025);
+    width: -moz-calc(100% / 1.025);
     height: 450px;
+    padding: 10px;
+}
+
+#Con > #mapimage {
+    text-align:center;
 }
 
 .mapDiv {

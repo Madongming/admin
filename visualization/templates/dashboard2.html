@@ -43,11 +43,17 @@
         RefreshToUnix: function(string){
             var f = string.slice(-1);
             var d = string.slice(0, -1);
+            if(f === 's'){
+                return parseInt(d) * 1000;
+            }
             if(f === 'm'){
                 return parseInt(d) * 60 * 1000;
             }
-            if(f === 's'){
-                return parseInt(d) * 1000;
+            if(f === 'h'){
+                return parseInt(d) * 60 * 60 * 1000;
+            }
+            if(f === 'w'){
+                return parseInt(d) * 60 * 60 * 7 *1000;
             }
         } 
     });

@@ -55,6 +55,33 @@ def base_monitor(request):
         monitor_name = paginator.page(paginator.num_pages)
     return render(request, 'base_monitor.html', {'monitor_names': monitor_name})
 
+def database_monitor(request):
+    limit = 15
+    monitor_name = []
+    for obj in Search_data.objects.filter(monitor_name__icontains='mysql'):
+        monitor_name.append(obj.monitor_name)
+    paginator = Paginator(monitor_name, limit)
+    page = request.GET.get('page')
+    try:
+        monitor_name = paginator.page(page)
+    except PageNotAnInteger:
+        monitor_name = paginator.page(1)
+    except EmptyPage:
+        monitor_name = paginator.page(paginator.num_pages)
+    return render(request, 'database_monitor.html', {'monitor_names': monitor_name})
+
+def dashboard1(request):
+    monitor_names = {}
+    for obj in Search_data.objects.filter(num_dashboard__startswith='1'):
+        monitor_names[obj.num_dashboard[-1]] = obj.monitor_name
+    return render(request, 'dashboard1.html', {'monitor_names': monitor_names})
+
+def dashboard2(request):
+    monitor_names = {}
+    for obj in Search_data.objects.filter(num_dashboard__startswith='2'):
+        monitor_names[obj.num_dashboard[-1]] = obj.monitor_name
+    return render(request, 'dashboard2.html', {'monitor_names': monitor_names})
+
 def api_post_profile_data(request):
     results = dict(request.POST.iterlists())
     for key in results:
@@ -82,30 +109,18 @@ def api_post_get_source_data(request):
     es=getElastseData()
     return HttpResponse(json.dumps(es.getResult(**results), ensure_ascii=False ))
 
-def database_monitor(request):
-    limit = 15
-    monitor_name = []
-    for obj in Search_data.objects.filter(monitor_name__icontains='mysql'):
-        monitor_name.append(obj.monitor_name)
-    paginator = Paginator(monitor_name, limit)
-    page = request.GET.get('page')
-    try:
-        monitor_name = paginator.page(page)
-    except PageNotAnInteger:
-        monitor_name = paginator.page(1)
-    except EmptyPage:
-        monitor_name = paginator.page(paginator.num_pages)
-    return render(request, 'database_monitor.html', {'monitor_names': monitor_name})
+def api_post_get_order_countAndmoney_data(request):
+    results = dict(request.POST.iterlists())
+    for key in results:
+        results[key] = results[key][0]
+    results['monitor_name'] = Search_data.objects.get(id=34).monitor_name
+    es=getElastseData()
+    return HttpResponse(json.dumps(es.getPicJson_test(**results), ensure_ascii=False ))
 
-def dashboard1(request):
-    monitor_names = {}
-    for obj in Search_data.objects.filter(num_dashboard__startswith='1'):
-        monitor_names[obj.num_dashboard[-1]] = obj.monitor_name
-    return render(request, 'dashboard1.html', {'monitor_names': monitor_names})
-
-def dashboard2(request):
-    monitor_names = {}
-    dashboard_infos = User.objects.get(id=request.user.userid).dashboard
-    for dashboard_info in dashboard_info.split(';'):
-        monitor_names[dashboard_info[1]] = Search_data.objects.get(id=int(str(dashboard_info[3:]))).monitor_name
-    return render(request, 'dashboard2.html', {'monitor_names': monitor_names})
+def api_post_get_site_DAUPV_data(request):
+    results = dict(request.POST.iterlists())
+    for key in results:
+        results[key] = results[key][0]
+    results['monitor_name'] = Search_data.objects.get(id=35).monitor_name
+    es=getElastseData()
+    return HttpResponse(json.dumps(es.getPicJson_test(**results), ensure_ascii=False ))

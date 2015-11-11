@@ -201,7 +201,7 @@ class getElastseData(ElastseData):
             fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%H:%M')
         if interval[-1] == 'h':
             per=int(interval[0:-1]) * 60 * 60
-            fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%H')
+            fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%Y-%m-%d %H:%M')
         if interval[-1] == 'w':
             per=int(interval[0:-1]) * 60 * 60 * 24 * 7
             fn = lambda x:datetime.datetime.fromtimestamp(x).strftime('%w')

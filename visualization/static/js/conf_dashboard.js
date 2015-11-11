@@ -77,7 +77,7 @@ $(document).ready(function(){
             "success": function(result) {
                 if (result){
                     alert('设置成功！');
-                    window.location.href=url;
+                    window.open(url, '_newtab');
                 }
             }
         });
